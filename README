@@ -16,3 +16,7 @@ However the MPI multisend implementation can be used on any MPI installed
 system. In particular the two-phase exchange method may be useful.
 The exchange methods are implemented mostly in src/nrniv/bgpdma.cpp .
 
+Changelog
+---------
+2022-05: Updated MOD files to contain valid C++ and be compatible with the
+         upcoming versions 8.2 and 9.0 of NEURON.

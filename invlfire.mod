@@ -15,6 +15,16 @@ NEURON {
 	RANGE noutput, ninput : count number of spikes generated and coming in
 }
 
+VERBATIM
+#ifndef NRN_VERSION_GTEQ_8_2_0
+extern void* nrn_random_arg(int);
+extern double nrn_random_pick(void*);
+#define RANDCAST
+#else
+#define RANDCAST (Rand*)
+#endif
+ENDVERBATIM
+
 PARAMETER {
 	tau = 5 (ms)   <1e-9,1e9>
 	invl = 10 (ms) <1e-9,1e9> : varies if r is non-nil
@@ -77,11 +87,10 @@ FUNCTION firetime()(ms) { : m < 1 and minf > 1
 
 PROCEDURE specify_invl() {
 VERBATIM {
-	extern double nrn_random_pick(void*);
 	if (!_p_r) {
 		return 0.;
 	}
-	invl = nrn_random_pick((void*)_p_r);
+	invl = nrn_random_pick(RANDCAST _p_r);
 	if (t >= burst_start && t <= burst_stop) {
 		invl *= burst_factor;
 	}
@@ -93,7 +102,6 @@ ENDVERBATIM
 
 PROCEDURE set_rand() {
 VERBATIM {
-	extern void* nrn_random_arg(int);
 	void** ppr;
 	ppr = (void**)(&(_p_r));
 	*ppr = nrn_random_arg(1);
